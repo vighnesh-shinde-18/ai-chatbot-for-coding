@@ -1,29 +1,48 @@
-require('dotenv').config();
+const prompts = require('../utils/prompts');
+const callHuggingFaceAPI = require('../utils/huggingFaceClient');
+const Conversation = require('../models/conversationModel');
 
-const generateCode = async (req, res) => {
+const processAIRequest = async (req, res) => {
     try {
-        const { prompt } = req.body;
+        const { featureType, userInput, language } = req.body;
 
-        const fetch = (await import('node-fetch')).default;
-
-        const response = await fetch('https://api-inference.huggingface.co/models/bigcode/starcoder', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ inputs: prompt })
-        });
-
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.statusText}`);
+        if (!featureType || !userInput) {
+            return res.status(400).json({ error: "Missing required inputs." });
         }
 
-        const data = await response.json();
-        res.json({ output: data[0]?.generated_text || "No response from AI" });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        let prompt = prompts[featureType];
+
+        if (!prompt) {
+            return res.status(400).json({ error: "Invalid feature selected." });
+        }
+
+        let fullPrompt = prompt;
+        if (featureType === "convertCode" && language) {
+            fullPrompt += ` Convert following code into ${language} language , Code : `;
+        }
+
+        fullPrompt += `\n\n${userInput}`;
+
+        const result = await callHuggingFaceAPI(fullPrompt);
+
+        if (req.user) {
+            await Conversation.create({
+                userId: req.user.id,
+                featureType,
+                userInput,
+                aiOutput: result?.[0]?.generated_text || "No response",
+            });
+
+            res.status(200).json(result);
+        }
     }
+    catch (e) {
+        res.status(500).json({ error: err.message });
+    }
+
 };
 
-module.exports = { generateCode };
+module.exports = { processAIRequest };
+
+
+
