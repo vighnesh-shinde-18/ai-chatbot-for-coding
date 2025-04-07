@@ -1,10 +1,8 @@
 const express = require('express');
-const { generateCode } = require('../controllers/aiControllers');
-const authMiddleware = require('../middleware/authMiddleware')
 const router = express.Router();
+const { processAIRequest } = require('../controllers/aiControllers');
 
-// authMiddleware
-router.post('/generate',  generateCode);
+router.post('/ai',  processAIRequest);
 
 module.exports = router;
 
