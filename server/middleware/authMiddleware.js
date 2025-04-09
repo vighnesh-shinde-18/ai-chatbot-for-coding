@@ -1,24 +1,65 @@
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
+require('dotenv').config();
 
-const authMiddleware = (req,res,next) =>{
-    
-    const authHeader = req.header('Authorization');
-    
-    if(!authHeader ||  !authHeader.startsWith("Bearer ")){
-        return next(); 
-    }
+const registerUser = async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
 
-    const token = authHeader.split(" ")[1];
-    try{
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; 
+        const existingUser = await User.findOne({ email: email });
+    
+        if (existingUser) {
+            return res.status(409).json({ error: "email already exists" });
+        }
+
+        const saltRounds = parseInt(process.env.SALT) || 10;
+        const hasedPassword = await bcrypt.hash(password, saltRounds);
+        const newUser = new User({
+            username,
+            email,
+            password: hasedPassword
+        });
+
+
+
+        await newUser.save();
+        res.status(201).json({ message: "User registered successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    catch(error){
-        res.status(400).json({message : "Invalid Token"})
-    } 
-    next();
 };
 
-module.exports = authMiddleware;
- 
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const reqUser = await User.findOne({ email });
+        if (!reqUser) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const isValidPassword = await bcrypt.compare(password, reqUser.password);
+        if (!isValidPassword) {
+            return res.status(400).json({ message: "Incorrect password" });
+        }
+
+        const token = jwt.sign({ id: reqUser._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+
+        res.status(200).json({
+            token,
+            user: {
+                id: reqUser._id,
+                username: reqUser.username,
+                email: reqUser.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = {
+    registerUser,
+    loginUser
+};
