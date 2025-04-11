@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
 const aiRoutes = require("./routes/aiRoutes")
 const db = require('./config/db')
-
 dotenv.config();
 
 const app = express();
@@ -24,6 +23,3 @@ app.use('/ai', aiRoutes);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
-
-
-
