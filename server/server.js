@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes')
 const aiRoutes = require("./routes/aiRoutes")
+const userRoutes = require("./routes/userRoutes")
 const db = require('./config/db')
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.use("/user/auth", authRoutes);
+app.use("/user/", userRoutes)
 
 app.use('/ai', aiRoutes);
 
