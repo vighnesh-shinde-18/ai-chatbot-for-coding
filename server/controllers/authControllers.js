@@ -6,14 +6,22 @@ require('dotenv').config();
 const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+
+        const existingUser = await User.findOne({ email: email });
+    
+        if (existingUser) {
+            return res.status(409).json({ error: "email already exists" });
+        }
+
         const saltRounds = parseInt(process.env.SALT) || 10;
         const hasedPassword = await bcrypt.hash(password, saltRounds);
-
         const newUser = new User({
             username,
             email,
             password: hasedPassword
         });
+
+
 
         await newUser.save();
         res.status(201).json({ message: "User registered successfully" });
@@ -55,5 +63,3 @@ module.exports = {
     registerUser,
     loginUser
 };
-
-
