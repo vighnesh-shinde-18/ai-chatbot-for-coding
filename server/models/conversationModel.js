@@ -1,4 +1,4 @@
- 
+
 const mongoose = require("mongoose");
 
 const conversationSchema = new mongoose.Schema({
@@ -7,9 +7,18 @@ const conversationSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  featureType: String,
-  userInput: String,
-  aiOutput: String,
+  featureType: {
+    type: String,  
+    required: true
+  },
+  userInput: {
+    type: String,
+    required: true
+  },
+  aiOutput: {
+    type: String,
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -17,3 +26,4 @@ const conversationSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Conversation", conversationSchema);
+
