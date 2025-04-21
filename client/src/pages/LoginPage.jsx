@@ -27,13 +27,13 @@ export default function LoginPage() {
       });
 
       if (response.status === 200) {
-        toast.success('LoggedIn successful', { autoClose: 3000 });
+        toast.success('LoggedIn successful', { autoClose: 1000 });
         setEmail('');
         setPassword('');
         setShowPassword(false);
        setTimeout(() => {
          navigate('/ChatBotPage')
-       }, 3000);
+       }, 2000);
 
       } else if (response.status === 404) {
         toast.info('User Not Found !', { autoClose: 5000 });
