@@ -99,6 +99,20 @@ export default function Sidebar() {
       });
   }, []);
 
+  const logOut = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      })
+      if (response.status === 200) {
+        navigate('/login')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleDeleteAll = () => {
     setHistory((prev) => ({
@@ -204,28 +218,28 @@ export default function Sidebar() {
             )}
           </div>
 
-          <div className="mb-32 ml-16 mr-8">
+          <div className="mb-32 mt-5 ml-16 mr-8">
             <button
               onClick={handleDeleteAll}
               className="rounded-md bg-red-500 px-6 py-2 text-white text-sm font-medium shadow-md hover:bg-red-600 transition"
             >
               Delete All
             </button>
-          </div>
-
-          <div className='flex justify-around'>
-            <div className="flex flex-row justify-center mb-14 px-3 pt-2 bg-white rounded-md shadow-sm box-border">
-              <div className="w-10 h-10 mb-2 mx-2 bg-indigo-500 text-white flex items-center justify-center rounded-full font-semibold text-sm uppercase">
-                {userObj?.username?.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{userObj.username}</p>
-                <p className="text-xs text-gray-500">{userObj.email}</p>
-              </div>
+            <div onClick={logOut} className="items-center mx-3 mt-2 space-x-4 flex-column sm:hidden flex cursor-pointer">
+              <span className="text-lg text-blue-500 font-medium">Logout</span>
+              <img src="/src/assets/logo/log-out.png" alt="Logout" className='size-7 text-sm text-white' />
             </div>
-            <img src="/src/assets/logo/log-out.png" alt="" className='flex size-7 mt-1.5 text-sm m-0 cursor-pointer sm:hidden' />
           </div>
 
+          <div className="flex flex-row justify-center mb-14 px-3 pt-2 bg-white rounded-md shadow-sm box-border">
+            <div className="w-10 h-10 mb-2 mx-2 bg-indigo-500 text-white flex items-center justify-center rounded-full font-semibold text-sm uppercase">
+              {userObj?.username?.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-800">{userObj.username}</p>
+              <p className="text-xs text-gray-500">{userObj.email}</p>
+            </div>
+          </div>
         </div>
       </div>
     </>
