@@ -1,23 +1,31 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const allHistory = {
-  All: ['Debugged bug #123', 'Generated login form', 'Explained recursion'],
-  Debug: ['Debugged bug #123', 'Fixed null pointer'],
-  Generate: ['Generated login form', 'Created navbar layout'],
-  Explain: ['Explained recursion', 'Explained promises'],
-};
-
-
-
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const [showMenu, setShowMenu] = useState(true);
   const [selectedType, setSelectedType] = useState('All');
-  const [history, setHistory] = useState(allHistory);
 
   const [userObj, setUserObj] = useState({});
+
+  const [allHistory, setAllHistory] = useState({
+    All: [],
+    Debug: [],
+    Generate: [],
+    Explain: [],
+    Review: [],
+    Convert: [],
+    TestCases: []
+  });
+
+
+  const [history, setHistory] = useState({});
+
+  // All: ['Debugged bug #123', 'Generated login form', 'Explained recursion'],
+  // Debug: ['Debugged bug #123', 'Fixed null pointer'],
+  // Generate: ['Generated login form', 'Created navbar layout'],
+  // Explain: ['Explained recursion', 'Explained promises'],
 
   const handleDeleteItem = (item) => {
     setHistory((prev) => ({
@@ -34,6 +42,60 @@ export default function Sidebar() {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/user/conversations", { withCredentials: true })
+      .then((response) => {
+        if (response.data.conversations) {
+          const newHistory = {
+            All: [],
+            Debug: [],
+            Generate: [],
+            Explain: [],
+            Review: [],
+            Convert: [],
+            TestCases: []
+          };
+
+          response.data.conversations.forEach((conversation) => {
+
+            newHistory.All.push(conversation.userInput);
+
+            switch (conversation.featureType) {
+              case 'codeDebugging':
+                newHistory.Debug.push(conversation.userInput);
+                break;
+              case 'codeGeneration':
+                newHistory.Generate.push(conversation.userInput);
+                break;
+              case 'explainCode':
+                newHistory.Explain.push(conversation.userInput);
+                break;
+              case 'codeReview':
+                newHistory.Review.push(conversation.userInput);
+                break;
+              case 'convertCode':
+                newHistory.Convert.push(conversation.userInput);
+                break;
+              case 'generateTestCases':
+                newHistory.TestCases.push(conversation.userInput);
+                break;
+              default:
+                break;
+            }
+          });
+
+          console.log("Fetched Conversations:", response.data.conversations);
+          console.log("Processed History:", newHistory);
+
+          setAllHistory(newHistory);
+          setHistory(newHistory);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching conversations:", error);
       });
   }, []);
 
@@ -91,7 +153,7 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-16 left-0 h-full w-72 bg-gradient-to-b from-violet-200 to-pink-200 shadow-xl transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-16 left-0 h-full w-72 bg-gradient-to-b  from-violet-200 to-pink-200 shadow-xl transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
           } transition-transform duration-300 z-40`}
       >
         <div className="flex flex-col h-full px-4 py-6 relative">
@@ -101,7 +163,7 @@ export default function Sidebar() {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="mb-4 rounded-md border border-gray-300 p-2 shadow-sm text-sm text-gray-800"
+            className="mb-4 rounded-md border border-gray-900 p-2 shadow-sm text-sm  text-gray-800"
           >
             {Object.keys(allHistory).map((type) => (
               <option key={type} value={type}>
@@ -151,16 +213,19 @@ export default function Sidebar() {
             </button>
           </div>
 
-          <div className="flex flex-row justify-evenly mb-14 pt-2 bg-white rounded-md shadow-sm mr-8 ">
-            <div className="w-10 h-10 mb-2 bg-indigo-500 text-white flex items-center justify-center rounded-full font-semibold text-sm uppercase">
-              {userObj?.username?.charAt(0).toUpperCase()}
+          <div className='flex justify-around'>
+            <div className="flex flex-row justify-center mb-14 px-3 pt-2 bg-white rounded-md shadow-sm box-border">
+              <div className="w-10 h-10 mb-2 mx-2 bg-indigo-500 text-white flex items-center justify-center rounded-full font-semibold text-sm uppercase">
+                {userObj?.username?.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800">{userObj.username}</p>
+                <p className="text-xs text-gray-500">{userObj.email}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">{userObj.username}</p>
-              <p className="text-xs text-gray-500">{userObj.email}</p>
-            </div>
-            <img src="/src/assets/logo/log-out.png" alt="" className= 'flex size-8 text-sm text-white cursor-pointer sm:hidden' />
+            <img src="/src/assets/logo/log-out.png" alt="" className='flex size-7 mt-1.5 text-sm m-0 cursor-pointer sm:hidden' />
           </div>
+
         </div>
       </div>
     </>
