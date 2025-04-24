@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
+
 import axios from 'axios';
 
 
@@ -99,6 +101,7 @@ export default function Sidebar() {
       });
   }, []);
 
+  const navigate = useNavigate()
   const logOut = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/auth/logout', {
@@ -172,15 +175,14 @@ export default function Sidebar() {
       >
         <div className="flex flex-col h-full px-4 py-6 relative">
           <h2 className="text-xl font-bold mb-6 text-gray-900">History Filter</h2>
-
-          {/* Dropdown */}
+ 
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="mb-4 rounded-md border border-gray-900 p-2 shadow-sm text-sm  text-gray-800"
+            className="mb-4 rounded-md border-gray-900 px-3 py-2 shadow-lg text-sm  text-gray-800"
           >
             {Object.keys(allHistory).map((type) => (
-              <option key={type} value={type}>
+              <option key={type} value={type} >
                 {type}
               </option>
             ))}
