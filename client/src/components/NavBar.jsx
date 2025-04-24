@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const navigation = [
-  { name: 'Debug', href: '#' },
-  { name: 'Review', href: '#' },
-  { name: 'Generate', href: '#' },
-  { name: 'Explain', href: '#' },
-  { name: 'Convert', href: '#' },
-  { name: 'TestCases', href: '#' },
-]
+  { name: 'Debug', route: '/debug' },
+  { name: 'Review', route: '/review' },
+  { name: 'Generate', route: '/generate' },
+  { name: 'Explain', route: '/explain' },
+  { name: 'Convert', route: '/convert' },
+  { name: 'TestCases', route: '/testcases' },
+];
+
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -46,7 +47,7 @@ export default function Navbar() {
             {navigation.map((item) => (
               <a
                 key={item.name}
-                href={item.href}
+                onClick={() => navigate(item.route)}
                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gradient-to-r from-indigo-600 to-purple-600 hover:text-white"
               >
                 {item.name}
@@ -75,20 +76,24 @@ export default function Navbar() {
               <div className="absolute z-10 mt-2 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="py-1">
                   {navigation.map((item) => (
-                    <a
+                    <button
                       key={item.name}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 cursor-pointer"
+                      onClick={() => {
+                        navigate(item.route)
+                        setDropdownOpen(false)
+                      }}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:text-indigo-600 w-full text-left"
                     >
                       {item.name}
-                    </a>
+                    </button>
+
                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          <div onClick={logOut} className="items-center space-x-4 flex-column hidden sm:flex cursor-pointer">
+          <div onClick={logOut} className="items-center space-x-1 flex-column hidden sm:flex cursor-pointer">
             <span className="text-lg text-blue-500 font-medium">Logout</span>
             <img src="/src/assets/logo/log-out.png" alt="Logout" className='size-8 text-sm text-white' />
           </div>
