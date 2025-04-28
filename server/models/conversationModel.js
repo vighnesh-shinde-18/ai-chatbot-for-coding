@@ -1,31 +1,25 @@
-
 const mongoose = require("mongoose");
 
 const conversationSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: true,
   },
   featureType: {
-    type: String,  
-    required: true
+    type: String,
+    required: true,
   },
   userInput: {
     type: String,
-    required: true
+    required: true,
   },
   aiOutput: {
     type: String,
-    required: true
+    required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+}, { timestamps: true });  // Add timestamps for createdAt and updatedAt automatically
 
-conversationSchema.index({ userInput: 'text', aiOutput: 'text' });
+conversationSchema.index({ userInput: "text", aiOutput: "text" });
 
 module.exports = mongoose.model("Conversation", conversationSchema);
-

@@ -1,45 +1,24 @@
 const User = require('../models/userModel');
-const Convertation = require('../models/conversationModel');
-require('dotenv').config();
+const Conversation = require('../models/conversationModel');
 
-const returnUserProfileInfo = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const existingUser = await User.findById(userId).lean();
-        
-        if (!existingUser) {
-            return res.status(404).json({ error: "Email does not exist" });
-        }
-
-        res.status(200).json({
-            email: existingUser.email,
-            username: existingUser.username,
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+exports.returnUserProfileInfo = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
     }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const returnUserConversations = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const existingUser = await User.findById(userId);
-    
-        if (!existingUser) {
-            return res.status(409).json({ error: "Email does not exist" });
-        }
-
-        const allConversations = await Convertation.find({ userId }).sort({ createdAt: -1 }).lean();
-      
-        res.status(200).json({
-            conversations: allConversations,
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-module.exports = {
-    returnUserProfileInfo,
-    returnUserConversations,
+exports.returnUserConversations = async (req, res, next) => {
+  try {
+    const conversations = await Conversation.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: conversations });
+  } catch (error) {
+    next(error);
+  }
 };

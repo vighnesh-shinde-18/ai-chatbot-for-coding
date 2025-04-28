@@ -78,8 +78,7 @@ export default function HistoryModal({ isOpen, onClose }) {
       fetchHistory();
     }
   }, [isOpen]);
-
-  // Filter history based on selection
+ 
   useEffect(() => {
     if (selectedFilter === 'All') {
       setFilteredHistory(historyData.All || []);
@@ -94,6 +93,7 @@ export default function HistoryModal({ isOpen, onClose }) {
         withCredentials: true
       });
       
+      coms 
       // Update local state
       setHistoryData(prev => {
         const updated = {...prev};
@@ -139,7 +139,6 @@ export default function HistoryModal({ isOpen, onClose }) {
               </button>
             </div>
             
-            {/* Filter dropdown */}
             <div className="mt-3">
               <HistoryFilterDropdown 
                 options={Object.keys(historyData)} 
@@ -149,8 +148,7 @@ export default function HistoryModal({ isOpen, onClose }) {
             </div>
           </div>
           
-          {/* Modal content - History items */}
-          <div className="bg-white px-4 py-2 sm:p-4 max-h-[60vh] overflow-y-auto">
+          <div className="bg-white px-4 py-2 sm:p-4 min-h-[60vh] overflow-y-auto">
             <HistoryList 
               items={filteredHistory}
               onDelete={handleDelete}

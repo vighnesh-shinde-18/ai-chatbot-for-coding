@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Navbar from '../components/NavBar';
 import SelectedFeature from '../components/SelectedFeature';
 
-export default function ReviewPage() {
+export default function DebugPage() {
     const [code, setCode] = useState('');
     const [response, setResponse] = useState('');
     const [loading, setLoading] = useState(false);
@@ -15,9 +15,9 @@ export default function ReviewPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'include',  
+                credentials: 'include',
                 body: JSON.stringify({ 
-                    featureType: "codeReview",   // <== Notice the featureType updated for Review
+                    featureType: "codeDebugging",  // Updated featureType for Debugging
                     userInput: code 
                 }),
             });
@@ -30,7 +30,7 @@ export default function ReviewPage() {
 
             const data = await res.json();
             let aiText = data?.data?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
-            
+
             if (aiText) {
                 aiText = aiText.replace(/\*\*(.*?)\*\*/g, '$1');
                 setResponse(aiText);
@@ -48,38 +48,41 @@ export default function ReviewPage() {
 
     return (
         <>
-        <Navbar selected="Review" />
-        <SelectedFeature featureName="Review" />
+        <Navbar selected="Debug" />
+        <SelectedFeature featureName="Debug" />
         <div className="max-w-4xl my-1 mx-auto p-4">
-          <textarea
-            className="w-full p-2 border rounded-lg mb-4"
-            rows={10}
-            placeholder="Paste your code here"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <button
-            onClick={handleSubmit}
-            className={`px-4 py-2 rounded-lg text-white ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-            disabled={loading}
-          >
-            {loading ? 'Thinking...' : 'Submit'}
-          </button>
-      
-          <div className="mt-6">
-            {loading && (
-              <div className="flex justify-center mt-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
-              </div>
-            )}
-            {response && !loading && (
-              <div className="mt-6 p-6 bg-gray-100 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-4 text-blue-700">AI Response:</h2>
-                <pre className="whitespace-pre-wrap">{response}</pre>
-              </div>
-            )}
-          </div>
+            <h1 className="text-xl font-semibold mb-4">Debug Code</h1>
+
+            <textarea
+                className="w-full p-2 border rounded-lg mb-4"
+                rows={10}
+                placeholder="Paste your code here"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+            />
+
+            <button
+                onClick={handleSubmit}
+                className={`px-4 py-2 rounded-lg text-white ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'}`}
+                disabled={loading}
+            >
+                {loading ? 'Debugging...' : 'Submit'}
+            </button>
+
+            <div className="mt-6">
+                {loading && (
+                    <div className="flex justify-center mt-6">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-red-500 border-solid"></div>
+                    </div>
+                )}
+                {response && !loading && (
+                    <div className="mt-6 p-6 bg-gray-100 rounded-lg shadow-md">
+                        <h2 className="text-2xl font-semibold mb-4 text-red-700">AI Response:</h2>
+                        <pre className="whitespace-pre-wrap">{response}</pre>
+                    </div>
+                )}
+            </div>
         </div>
-      </>
+        </>
     )
 }

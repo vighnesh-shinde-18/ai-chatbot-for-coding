@@ -1,42 +1,46 @@
-const prompts = require('../utils/prompts');
-const { generateContentFromPrompt } = require('../utils/googleGeminiApi'); // Importing the new function
-const { saveConversation } = require('./conversationControllers');
+const { generateContentFromPrompt } = require('../utils/googleGeminiApi');
+const promptsObj = require('../utils/prompts');
+const Conversation = require('../models/conversationModel');
 
-const processAIRequest = async (req, res) => {
+exports.processAIRequest = async (req, res, next) => {
   try {
-    const { featureType, userInput, language } = req.body;
+    const { featureType, userInput, targetLanguage } = req.body;
 
     if (!featureType || !userInput) {
-      return res.status(400).json({ error: "Missing required inputs." });
+      return res.status(400).json({ success: false, message: 'Feature type and user input are required.' });
     }
 
-    const promptTemplate = prompts[featureType];
+    let prompt = promptsObj[featureType];
 
-    if (!promptTemplate) {
-      return res.status(400).json({ error: "Invalid feature selected." });
+    if (!prompt) {
+      return res.status(400).json({ success: false, message: 'Invalid feature type.' });
     }
 
-    let fullPrompt = promptTemplate;
+    let finalPrompt = prompt + userInput;
 
-    if (featureType === "convertCode" && language?.trim()) {
-      fullPrompt += `Targeted Language : ${language}. Code: `;
-    }
-    fullPrompt += userInput;
-
-    const response = await generateContentFromPrompt(fullPrompt);
-
-    if (req.user || req.user.id) {
-      await saveConversation( res, req.user.id, featureType, userInput, response);
+    if (featureType === 'convertCode' && targetLanguage) {
+      finalPrompt += `\nTarget Language: ${targetLanguage}`;
     }
 
-    res.status(200).json({ success: true, data: response });
+    const aiResponse = await generateContentFromPrompt(finalPrompt);
+    const aiOutput = aiResponse?.response?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
 
-  }
-  catch (error) {
-    console.error("AI Error:", error);
-    res.status(500).json({ error: "Internal Server Error. AI failed." });
+    const newConversation = new Conversation({
+      userId: req.user.id,
+      featureType,
+      userInput,
+      aiOutput,
+    });
 
+    await newConversation.save();
+
+    res.status(201).json({ 
+      success: true,
+      message: 'AI response generated successfully',
+      data: newConversation 
+    });
+
+  } catch (error) {
+    next(error);
   }
 };
-
-module.exports = { processAIRequest };
