@@ -1,36 +1,30 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Hero from './pages/Hero'
-import Login from './pages/LoginPage'
-import Register from './pages/RegisterPage'
-import ChatBotPage from './pages/ChatBotPage'
+// src/App.jsx
+import Hero from "./components/Hero";
+import Login from "./pages/LoginPage";
+import Register from "./pages/RegisterPage";
+import Dashboard from "./pages/Dashboard";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
+import FeaturePage from "./components/FeaturePage";
 
-// Feature pages (create these as separate components)
-import DebugPage from './pages/DebugPage'
-import ReviewPage from './pages/ReviewPage'
-import GeneratePage from './pages/GeneratePage'
-import ExplainPage from './pages/ExplainPage'
-import ConvertPage from './pages/ConvertPage'
-import TestCasesPage from './pages/TestCasesPage'
-import HistoryModal from './components/HistoryModal'
-
-export default function App() {
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Hero />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/ChatBotPage" element={<ChatBotPage />} />
-
-      {/* Feature Routes */}
-      <Route path="/debug" element={<DebugPage />} />
-      <Route path="/review" element={<ReviewPage />} />
-      <Route path="/generate" element={<GeneratePage />} />
-      <Route path="/explain" element={<ExplainPage />} />
-      <Route path="/convert" element={<ConvertPage />} />
-      <Route path="/testcases" element={<TestCasesPage />} />
-
-      {/* Optional: Redirect unknown routes */}
-      <Route path="/historyModal" element={<HistoryModal/>} />
-    </Routes>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Hero />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/debug" element={<FeaturePage selectedFeature="codeDebugging" />} />
+        <Route path="/review" element={<FeaturePage selectedFeature="codeReview" />} />
+        <Route path="/generate" element={<FeaturePage selectedFeature="codeGeneration" />} />
+        <Route path="/convert" element={<FeaturePage selectedFeature="convertCode" />} />
+        <Route path="/explain" element={<FeaturePage selectedFeature="explainCode" />} />
+        <Route path="/testcases" element={<FeaturePage selectedFeature="generateTestCases" />} />
+      </Routes>
+      <Toaster richColors position="top-right" />
+    </BrowserRouter>
+  );
 }
+
+export default App;

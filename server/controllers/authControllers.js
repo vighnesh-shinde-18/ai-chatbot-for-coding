@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -53,7 +53,7 @@ exports.loginUser = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+      return res.status(404).json({ success: false, message: 'Invalid credentials.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -83,6 +83,10 @@ exports.loginUser = async (req, res, next) => {
 };
 
 exports.logoutUser = (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };

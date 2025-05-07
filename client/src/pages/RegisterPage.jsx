@@ -1,131 +1,119 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import openEye from '../assets/icons/open_eye.png';
-import closedEye from '../assets/icons/hidden_eye.png';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UserPlus } from "lucide-react";
+import { toast } from "sonner";
+import Logo from "@/assets/logo/logo.png";
 
-export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
-  const [showPassword, setShowPassword] = useState(false);
+const RegisterPage = () => {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, username, password }),
       });
 
-      if (response.ok) {
-        toast.success('Registered successfully');
-        setTimeout(() => navigate('/login'), 1000);
+      if (response.status === 201) {
+        toast.success("Registration successful! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 2000);
       } else if (response.status === 409) {
-        toast.info('Email already exists!');
+        toast.error("User already exists.");
       } else {
-        toast.error("Something went wrong!");
+        console.log(response)
+        toast.error("Registration failed. Try again.");
       }
     } catch (error) {
-      toast.warning('Network error. Try again later');
+      toast.error("Network error. Please check your connection.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 overflow-auto">
-      <ToastContainer />
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-md p-8 mx-auto">
-          <div className="text-center mb-10">
-            <img
-              src="/src/assets/logo/logo.png"
-              alt="App Logo"
-              className="h-28 w-auto object-contain mx-auto mb-6"
-            />
-            <h1 className="text-3xl font-bold text-white">
-              Create your account
-            </h1>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800 p-8 rounded-xl shadow-2xl">
+    <section className="min-h-screen shadow-xl/30 flex items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-md shadow-xl rounded-3xl border-none">
+        <CardHeader className="flex flex-col items-center space-y-4">
+          <img src={Logo} alt="Logo" className="size-44 object-contain m-0" />
+          <CardTitle className="text-2xl font-bold text-center text-primary">
+            Create your account
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                required
+                placeholder="you@example.com"
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="username" className="text-sm font-medium text-muted-foreground">
                 Username
               </label>
-              <input
-                name="username"
+              <Input
+                id="username"
                 type="text"
+                value={username}
                 required
-                value={formData.username}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md bg-gray-700 border-gray-600 px-3 py-2 text-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="your_username"
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-1"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                Email address
-              </label>
-              <input
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md bg-gray-700 border-gray-600 px-3 py-2 text-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="password" className="text-sm font-medium text-muted-foreground">
                 Password
               </label>
-              <div className="relative">
-                <input
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="mt-1 w-full rounded-md bg-gray-700 border-gray-600 px-3 py-2 pr-10 text-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <img
-                  src={showPassword ? openEye : closedEye}
-                  alt="Toggle visibility"
-                  className="absolute top-3 right-3 w-5 h-5 cursor-pointer invert"
-                  onClick={() => setShowPassword(!showPassword)}
-                />
-              </div>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                required
+                placeholder="••••••••"
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1"
+              />
             </div>
 
-            <button
-              type="submit"
-              className="w-full rounded-md bg-indigo-600 py-2 text-white font-semibold hover:bg-indigo-500 transition"
-            >
+            <Button type="submit" className="w-full gap-2">
+              <UserPlus className="w-4 h-4" />
               Register
-            </button>
+            </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-400">
-            Already have an account?{' '}
-            <button
-              onClick={() => navigate('/login')}
-              className="font-semibold text-indigo-400 hover:text-indigo-300"
+          <p className="mt-6 text-sm text-center text-muted-foreground">
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="font-semibold text-primary hover:underline cursor-pointer"
             >
-              Sign in
-            </button>
+              Login here
+            </span>
           </p>
-        </div>
-      </div>
-    </div>
+          <p className="my-2 font-medium text-center cursor-pointer underline">Continue Without Register</p>
+        </CardContent>
+      </Card>
+    </section>
   );
-}
+};
+
+export default RegisterPage;
