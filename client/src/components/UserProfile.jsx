@@ -32,7 +32,6 @@ const UserProfile = () => {
         <p className="font-medium truncate">{user?.username || "Username"}</p>
         <p className="text-gray-400 truncate whitespace-nowrap overflow-hidden">{user?.email || "user@example.com"}</p>
       </div>
-
     </div>
   );
 };

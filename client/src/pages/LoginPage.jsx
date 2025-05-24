@@ -26,9 +26,11 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         toast.success("Login successful! Redirecting...");
-        setTimeout(()=>{
+        setTimeout(() => {
           navigate('/dashboard')
         }, 4000)
+
+        localStorage.setItem("isLoggedIn", true);
       } else if (response.status === 404) {
         toast.error("User not found.");
       } else if (response.status === 401) {
@@ -40,7 +42,7 @@ const LoginPage = () => {
       toast.error("Network error. Please try again.");
     }
   };
-
+ 
   return (
     <section className="min-h-screen shadow-xl/30 flex items-center justify-center  bg-background px-4 py-10">
       <Card className="w-full max-w-md shadow-xl rounded-3xl border-none">
@@ -94,16 +96,14 @@ const LoginPage = () => {
             </Button>
           </form>
           <p className="mt-6 text-sm text-center text-muted-foreground">
-           <span>Don't have an account?{" "}</span> 
+            <span>Don't have an account?{" "}</span>
             <span
               onClick={() => navigate("/register")}
               className="font-semibold text-primary hover:underline cursor-pointer"
             >
               Register Now
             </span>
-          </p>
-          <p className="my-2 font-medium text-center cursor-pointer underline">Continue Without Login</p>
-        </CardContent>
+          </p> </CardContent>
       </Card>
     </section>
   );

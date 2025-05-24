@@ -4,7 +4,7 @@ const Conversation = require('../models/conversationModel');
 
 exports.processAIRequest = async (req, res, next) => {
   try {
-    const { featureType, userInput, targetLanguage } = req.body;
+    const { featureType, userInput, targetLanguage} = req.body;
 
     if (!featureType || !userInput) {
       return res.status(400).json({ success: false, message: 'Feature type and user input are required.' });
@@ -24,15 +24,15 @@ exports.processAIRequest = async (req, res, next) => {
 
     const aiResponse = await generateContentFromPrompt(finalPrompt);
     const aiOutput = aiResponse?.response?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
-
-    const newConversation = new Conversation({
-      userId: req.user.id,
-      featureType,
-      userInput,
-      aiOutput,
-    });
-
-    await newConversation.save();
+  
+      const newConversation = new Conversation({
+        userId: req.user.id,
+        featureType,
+        userInput,
+        aiOutput,
+      });
+      
+      await newConversation.save();
 
     res.status(201).json({ 
       success: true,

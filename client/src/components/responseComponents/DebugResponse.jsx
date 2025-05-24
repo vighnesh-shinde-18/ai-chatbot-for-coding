@@ -2,9 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Editor from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 export default function DebugResponse({ response } ) {
-  const copyCode = () => navigator.clipboard.writeText(response.correctedCode);
+  const copyCode = () =>{
+    navigator.clipboard.writeText(response.correctedCode);
+    toast.success("Code Copy Succesfully...");
+    }
 
   console.log(response.data)
   return (

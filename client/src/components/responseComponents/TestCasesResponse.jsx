@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TestCasesResponse({ response } ) {
+ console.log(response)
   return (
     <Card className="w-full">
       <CardHeader>

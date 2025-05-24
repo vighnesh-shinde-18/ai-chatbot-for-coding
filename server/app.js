@@ -50,7 +50,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/ai/conversations", conversationRoutes);  // Corrected typo: convertations ➔ conversations
 
-// Global Error Handler
+ 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });

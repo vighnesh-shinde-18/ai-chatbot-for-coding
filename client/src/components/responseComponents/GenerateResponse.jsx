@@ -2,9 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Editor from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 export default function GenerateResponse({ response } ) {
-  const copyCode = () => navigator.clipboard.writeText(response.generatedCode);
+  const copyCode = () => {
+    navigator.clipboard.writeText(response.generatedCode);
+    toast.success("Code Copy Succesfully...");
+  }
 
   return (
     <Card className="w-full">

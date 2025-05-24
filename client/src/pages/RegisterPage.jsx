@@ -38,6 +38,8 @@ const RegisterPage = () => {
     }
   };
 
+   
+
   return (
     <section className="min-h-screen shadow-xl/30 flex items-center justify-center bg-background px-4 py-10">
       <Card className="w-full max-w-md shadow-xl rounded-3xl border-none">
@@ -109,7 +111,6 @@ const RegisterPage = () => {
               Login here
             </span>
           </p>
-          <p className="my-2 font-medium text-center cursor-pointer underline">Continue Without Register</p>
         </CardContent>
       </Card>
     </section>
