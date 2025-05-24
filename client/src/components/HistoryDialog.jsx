@@ -134,11 +134,10 @@ export default function HistoryDialog({ open, setOpen }) {
                                 <TableRow>
                                     <TableHead className="whitespace-nowrap text-xs sm:text-sm">Feature</TableHead>
                                     <TableHead className="whitespace-nowrap text-xs sm:text-sm">Title</TableHead>
-                                    <TableHead className="whitespace-nowrap text-xs sm:text-sm">Date</TableHead>
+                                    <TableHead className="whitespace-nowrap hidden sm:flex text-xs sm:text-sm">Date</TableHead>
                                     <TableHead className="text-right text-xs sm:text-sm">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
-
                             <TableBody>
                                 {conversations.map((item) => {
                                     let parsedData = {};
@@ -157,7 +156,7 @@ export default function HistoryDialog({ open, setOpen }) {
                                             <TableCell className="text-xs sm:text-sm truncate max-w-[150px] sm:max-w-[300px]">
                                                 {parsedData.title || "No title found"}
                                             </TableCell>
-                                            <TableCell className="text-xs sm:text-sm">{item.createdAt?.slice(0, 10)}</TableCell>
+                                            <TableCell className="text-xs hidden sm:flex sm:text-sm">{item.createdAt?.slice(0, 10)}</TableCell>
                                             <TableCell className="text-right">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>

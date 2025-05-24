@@ -81,12 +81,15 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
                     <DialogHeader className="p-6 border-b flex items-center justify-between ">
                         <DialogTitle>View History</DialogTitle>
                     </DialogHeader>
-
                     <div className="flex-1 p-6 overflow-y-auto space-y-6">
+                        <div className="flex flex-row justify-between">
                         <h1 className="text-2xl font-bold text-center md:text-left">
                             {typeToName[featureType] || "AI Feature"}
                         </h1>
-
+                        <p className="text-2xl font-bold text-center md:text-right">
+                        {}
+                        </p>
+                        </div>
                         <Editor
                             height="300px"
                             theme="vs-dark"
@@ -99,7 +102,6 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
                                 fontSize: 14,
                             }}
                         />
-
                         {response && (
                             <div className="mt-6 space-y-4">
                                 <FeatureResponseRenderer
@@ -120,6 +122,5 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
                 </div>
             </DialogContent>
         </Dialog>
-
     );
 }
