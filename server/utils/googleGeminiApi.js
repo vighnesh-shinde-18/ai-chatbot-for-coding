@@ -7,9 +7,10 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 async function generateContentFromPrompt(prompt) {
   try {
     const result = await model.generateContent(prompt);
-    return result;
+    const text = await result.response.text();
+    return text;
   } catch (error) {
-    console.error("Error generating content:", error.message);
+    console.error("Gemini API Error:", error.message);
     throw new Error("Failed to generate content from Gemini API");
   }
 }

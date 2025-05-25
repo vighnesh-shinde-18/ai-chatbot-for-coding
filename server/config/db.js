@@ -10,5 +10,6 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+mongoose.set("strictQuery", true);
 
 connectDB();

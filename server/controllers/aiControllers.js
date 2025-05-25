@@ -1,14 +1,17 @@
 const { generateContentFromPrompt } = require('../utils/googleGeminiApi');
 const promptsObj = require('../utils/prompts');
 const Conversation = require('../models/conversationModel');
+const sanitize = require('sanitize-html');
 
 exports.processAIRequest = async (req, res, next) => {
   try {
     const { featureType, userInput, targetLanguage} = req.body;
-
+    
+     userInput = sanitize(userInput);
     if (!featureType || !userInput) {
       return res.status(400).json({ success: false, message: 'Feature type and user input are required.' });
     }
+
 
     let prompt = promptsObj[featureType];
 

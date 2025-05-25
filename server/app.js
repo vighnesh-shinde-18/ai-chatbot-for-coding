@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
 
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
@@ -10,35 +13,30 @@ const conversationRoutes = require("./routes/conversationRoutes");
 const db = require("./config/db");
 
 dotenv.config();
-
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+// Security middleware
+app.use(helmet());
+app.use(morgan("dev"));
 
-const helmet = require('helmet'); 
-  
-app.use(helmet());  
- 
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: "Too many requests from this IP, please try again later.",
+});
+app.use("/api", limiter);
 
+// CORS setup
+const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:5173"];
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
 }));
 
-app.use(express.json());
-app.use(cookieParser())
-app.use(express.json({ limit: "10kb" }));  // limit request size
-;
-
-const PORT = process.env.PORT || 5000;
-
-
+// Parsers
+app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
 
 // Routes
 app.get("/", (req, res) => {
@@ -48,14 +46,19 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/api/ai/conversations", conversationRoutes);  // Corrected typo: convertations ➔ conversations
+app.use("/api/ai/conversations", conversationRoutes);
 
- 
+// Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong!" });
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Something went wrong!",
+  });
 });
 
+// Server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
