@@ -51,18 +51,18 @@ exports.loginUser = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Email and password are required.' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");;
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Invalid credentials.' });
+  if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
-
+    
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+      return res.status(401).json({ success: false, message: "Incorrect password" });
     }
-
+    
     const token = generateToken(user);
 
     res.cookie('token', token, {
@@ -82,6 +82,8 @@ exports.loginUser = async (req, res, next) => {
     next(error);
   }
 };
+  
+
 
 exports.logoutUser = (req, res) => {
   res.clearCookie('token', {
