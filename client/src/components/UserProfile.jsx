@@ -5,11 +5,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const UserProfile = () => {
   const [user, setUser] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const FETCH_USER_URL = `${BASE_URL}/api/user/profile`;
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/user/profile", {
-          withCredentials: true, // Important to send the token from cookies
+        const res = await axios.get(FETCH_USER_URL, {
+          withCredentials: true, 
         });
         if (res.data.success) {
           setUser(res.data.data);

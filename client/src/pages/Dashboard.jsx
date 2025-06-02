@@ -3,26 +3,26 @@ import HistoryDialog from "@/components/HistoryDialog";
 import { useState } from "react";
 
 const Dashboard = () => {
-  const [historyOpen, setHistoryOpen] = useState(false); 
-
+  const [historyOpen, setHistoryOpen] = useState(false);
+  
   return (
-    <> 
-      <div className="flex">
-       <div className="sm:w-64 min-h-screen"> 
-        <Sidebar 
-          onHistoryClick={() => setHistoryOpen(true)}
-          selectedFeature=""
-          /></div>
-        <main className="flex justify-center items-center flex-col w-full bg-white dark:bg-black text-black dark:text-white p-6">
-          <h1 className="text-5xl text-center mt-7 sm:mt-0 font-bold">
+    <div className="flex flex-col sm:flex-row min-h-screen bg-black dark">
+      <Sidebar 
+        onHistoryClick={() => setHistoryOpen(true)}
+        selectedFeature=""
+      />
+      <main className="flex-1 flex justify-center items-center p-4 sm:p-0 bg-white dark:bg-black text-black dark:text-white">
+        <div className="text-center max-w-2xl">
+          <h1 className="text-3xl sm:text-5xl font-bold mb-4">
             Welcome to Code Assistant
           </h1>
-          <p className="text-muted-foreground mt-4 text-center text-xl">
+          <p className="text-muted-foreground text-lg sm:text-xl">
             Choose a feature from the sidebar to get started.
           </p>
-        </main>
-      </div> 
-    </>
+        </div>
+      </main>
+      {historyOpen && <HistoryDialog onClose={() => setHistoryOpen(false)} />}
+    </div>  
   );
 };
 

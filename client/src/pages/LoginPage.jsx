@@ -13,11 +13,15 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const LOGIN_USER_URL = `${BASE_URL}/api/auth/login`;
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(LOGIN_USER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -29,8 +33,7 @@ const LoginPage = () => {
         setTimeout(() => {
           navigate('/dashboard')
         }, 4000)
-
-        localStorage.setItem("isLoggedIn", true);
+ 
       } else if (response.status === 404) {
         toast.error("User not found.");
       } else if (response.status === 401) {
@@ -44,7 +47,7 @@ const LoginPage = () => {
   };
  
   return (
-    <section className="min-h-screen shadow-xl/30 flex items-center justify-center  bg-background px-4 py-10">
+    <section className="dark min-h-screen shadow-xl/30 flex items-center justify-center  bg-background px-4 py-10">
       <Card className="w-full max-w-md shadow-xl rounded-3xl border-none">
         <CardHeader className="flex flex-col items-center space-y-4">
           <img src={Logo} alt="Logo" className="size-44 object-contain" />

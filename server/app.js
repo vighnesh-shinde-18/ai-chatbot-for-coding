@@ -27,12 +27,29 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// CORS setup
-const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:5173"];
+
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL, // Optional: From .env
+  "http://localhost:5173",  // Vite default
+  "http://localhost:5174",  // Your current dev port
+];
+
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin){
+       return callback(null, true);
+      }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+
 
 // Parsers
 app.use(express.json({ limit: "10kb" }));

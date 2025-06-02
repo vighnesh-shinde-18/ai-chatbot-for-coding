@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus } from "lucide-react";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import Logo from "@/assets/logo/logo.png";
 
@@ -11,13 +11,17 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const REGISTER_USER_URL = `${BASE_URL}/api/auth/register`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(REGISTER_USER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -38,10 +42,10 @@ const RegisterPage = () => {
     }
   };
 
-   
+
 
   return (
-    <section className="min-h-screen shadow-xl/30 flex items-center justify-center bg-background px-4 py-10">
+    <section className="dark min-h-screen shadow-xl/30 flex items-center justify-center bg-background px-4 py-10">
       <Card className="w-full max-w-md shadow-xl rounded-3xl border-none">
         <CardHeader className="flex flex-col items-center space-y-4">
           <img src={Logo} alt="Logo" className="size-44 object-contain m-0" />
@@ -53,7 +57,7 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
-                Email
+                Email address
               </label>
               <Input
                 id="email"
@@ -85,19 +89,29 @@ const RegisterPage = () => {
               <label htmlFor="password" className="text-sm font-medium text-muted-foreground">
                 Password
               </label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                required
-                placeholder="••••••••"
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1"
-              />
+              <div className="relative">
+
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  required
+                  placeholder="••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 pr-10"
+                />
+
+                <div
+                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-muted-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </div>
+              </div>
             </div>
 
             <Button type="submit" className="w-full gap-2">
-              <UserPlus className="w-4 h-4" />
+              <UserPlus className="w-4 h-4 cursor-pointer" />
               Register
             </Button>
           </form>

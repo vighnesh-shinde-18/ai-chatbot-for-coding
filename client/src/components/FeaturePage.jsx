@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
 import FeatureResponseRenderer from "@/components/responseComponents/FeatureResponseRenderer";
+import dotenv from "dotenv"
 
 const languageOptions = [
   "javascript", "python", "c++", "java", "typescript", "go", "rust", "php", "c#", "kotlin"
@@ -30,15 +31,20 @@ const typeToComment = {
 };
 
 const FeaturePage = ({ requiredFeature }) => {
-  const [inputCode, setInputCode] = useState(typeToComment[requiredFeature]);
+  const [inputCode, setInputCode] = useState(typeToComment[requiredFeature] || "// Enter your code");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [targetLang, setTargetLang] = useState(languageOptions[0]);
 
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const AI_RESPONSE_URL = `${BASE_URL}/api/ai/generate`;
+
+
   useEffect(() => {
-    setInputCode(typeToComment[requiredFeature] || "");
+    setInputCode(typeToComment[requiredFeature] || "// Enter your code");
   }, [requiredFeature]);
 
   const handleSubmit = async () => {
@@ -57,7 +63,7 @@ const FeaturePage = ({ requiredFeature }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/ai/generate",
+        AI_RESPONSE_URL,
         payload,
         {
           headers: { "Content-Type": "application/json" },
@@ -70,29 +76,34 @@ const FeaturePage = ({ requiredFeature }) => {
       const outerCleaned = rawOutputStr.replace(/^```json\n/, "").trim();
       const finalOutput = outerCleaned.replace(/```$/, "").trim();
 
-      const parsed = JSON.parse(finalOutput);
-      setResponse(parsed);
+      try {
+        const parsed = JSON.parse(finalOutput);
+        setResponse(parsed);
+      } catch (parseErr) {
+        console.error("JSON Parse Error:", parseErr);
+        toast.error("AI returned invalid JSON format.");
+        setResponse({ error: "Failed to parse AI response." });
+      }
     } catch (err) {
       console.error("Error:", err);
-      toast.error("Failed to fetch or parse AI response.");
+      toast.error("Failed to fetch AI response.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-background text-foreground">
+    <div className="dark flex h-screen bg-background text-foreground">
       <Sidebar isLoggedIn={isLoggedIn} selectedFeature={requiredFeature} />
-
       <div className="flex-1 p-6 overflow-auto space-y-6">
         <h1 className="text-2xl font-bold text-center md:text-left">
           {typeToName[requiredFeature] || "AI Feature"}
         </h1>
- 
+
         <Editor
           height="300px"
-          theme="vs-dark"
-          language="javascript"
+          theme="vs-light"
+          language={requiredFeature === "codeGeneration" ? "text" : "javascript"}
           value={inputCode}
           onChange={(val) => setInputCode(val || "")}
           options={{
@@ -101,17 +112,17 @@ const FeaturePage = ({ requiredFeature }) => {
             fontSize: 14,
           }}
         />
- 
+
         {requiredFeature === "convertCode" && (
           <div className="flex items-center gap-2">
             <label className="font-medium">Target Language:</label>
             <select
               value={targetLang}
               onChange={(e) => setTargetLang(e.target.value)}
-              className="px-3 py-2 rounded border bg-white text-black dark:bg-background dark:text-white"
+              className="px-3 py-2 rounded border"
             >
               {languageOptions.map((lang) => (
-                <option key={lang} value={lang}>
+                <option key={lang} value={lang} className="text-white bg-black">
                   {lang}
                 </option>
               ))}

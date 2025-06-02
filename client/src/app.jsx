@@ -5,8 +5,7 @@ import Register from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
-import FeaturePage from "./components/FeaturePage";
-import HistoryDialog from "./components/HistoryDialog";
+import FeaturePage from "./components/FeaturePage"; 
 
 function App() {
   return (

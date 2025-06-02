@@ -27,6 +27,11 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
     const [response, setResponse] = useState(null);
     const [featureType, setFeatureType] = useState("");
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const FETCH_CONVERSATIONS_URL = `${BASE_URL}/api/ai/conversations`;
+
+
+
     const handleCopy = () => {
         if (response?.correctedCode) {
             navigator.clipboard.writeText(response.correctedCode);
@@ -39,13 +44,15 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
    
 
     const getInfo = async () => {
-        if (!itemId) return;
+        if (!itemId){
+             return;
+            }
 
         setResponse(null);
 
         try {
             const res = await axios.get(
-                `http://localhost:5000/api/ai/conversations/${itemId}`,
+                `${FETCH_CONVERSATIONS_URL}/${itemId}`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
@@ -75,7 +82,7 @@ export default function ViewHistoryDialog({ open, onClose, itemId }) {
     }, [open, itemId]);
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} className="dark" onOpenChange={onClose}>
             <DialogContent className="max-w-2xl sm:min-w-7xl h-[90vh] p-0 overflow-scroll">
                 <div className="flex flex-col h-full">
                     <DialogHeader className="p-6 border-b flex items-center justify-between ">

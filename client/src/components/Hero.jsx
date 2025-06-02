@@ -18,7 +18,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-background px-4 py-12 md:px-6">
+    <section className="dark min-h-screen flex items-center justify-center bg-background px-4 py-12 md:px-6">
       <Card className="w-full max-w-6xl shadow-2xl border-none rounded-3xl bg-gradient-to-br from-background via-muted to-background">
         <CardContent className="p-8 md:p-14 text-center space-y-8">
           <div className="space-y-4">

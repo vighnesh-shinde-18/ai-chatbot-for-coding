@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import HistoryDialog from "./HistoryDialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   { name: "Debug", icon: BugPlay, path: "/debug" },
@@ -42,6 +43,9 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
   const [showHistory, setShowHistory] = useState(false); // ✅ Controls dialog open state
   const navigate = useNavigate();
 
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const LOGOUT_USER_URL = `${BASE_URL}/api/auth/logout`;
+
   useEffect(() => {
     const handleResize = () => {
       setIsSidebarOpen(window.innerWidth >= 768);
@@ -54,7 +58,7 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
 
   const logOutUser = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/logout", {
+      const response = await fetch(LOGOUT_USER_URL, {
         method: "POST",
         credentials: "include",
       });
@@ -71,11 +75,7 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
     }
   };
 
-  const exitUser = async () => {
-    navigate("/login");
-  };
-
-
+   
   return (
 
     <>
@@ -89,13 +89,12 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
           {isSidebarOpen ? <X className="w-8 h-8" /> : <Menu className="w-6 h-6" />}
         </Button>
       </div>
-
-      {/* Sidebar */}
-      <div className={`bg-gray-900 text-white h-screen flex flex-col justify-between transition-all duration-300 ease-in-out 
-      ${isSidebarOpen ? "w-64" : "w-0 overflow-hidden"} 
-      md:w-64 fixed md:static z-40`}
-      >
-        <div>
+ 
+    <Card className={`bg-card text-foreground h-screen flex flex-col justify-between transition-all duration-300 ease-in-out 
+      ${isSidebarOpen ? "w-64 overflow-hidden" : "w-0 overflow-hidden"} 
+      md:w-64 fixed md:static z-40 bg-gradient-to-br from-background via-muted to-background`}
+    > 
+          <h2 className="text-2xl font-bold p-4">CodeMate</h2>
           <h2 className="text-2xl font-bold p-4">Code Assistant</h2>
           <nav className="space-y-1 px-4">
             {features.map((feature) => {
@@ -105,16 +104,15 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
                 <Link
                   key={feature.name}
                   to={feature.path}
-                  className={`flex items-center space-x-2 rounded-md px-3 py-2 transition ${isSelected ? "bg-blue-400" : "hover:bg-gray-800"}`}
+                  className={`flex items-center space-x-2 rounded-md px-3 py-2 transition ${isSelected ? "bg-violet-600" : "hover:bg-gray-800"}`}
                 >
                   <Icon className="w-5 h-5" />
                   <span>{feature.name}</span>
                 </Link>
               );
             })}
-          </nav>
-        </div>
-        <div className="px-4 py-4 space-y-3">
+          </nav> 
+        <div className="px-4 py-4 space-y-3 ">
           <UserProfile />
           <Button
             variant="ghost"
@@ -125,15 +123,15 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
               }
             }
             }
-            className="w-full"
+            className="w-full cursor-pointer"
           >
-            <History className="mr-2 h-4 w-4" /> History
+            <History className="mr-2 h-4 w-4 " /> History
           </Button>
-          <Button onClick={logOutUser} variant="destructive" className="w-full">
+          <Button onClick={logOutUser}  className="w-full hover:bg-red-500 bg-red-500 cursor-pointer">
             <LogOut className="mr-2 h-4 w-4" /> Logout
           </Button>
         </div>
-      </div>
+      </Card>
       {showHistory && <HistoryDialog setSelectedFeature={setSelectedFeature}  open={showHistory} setOpen={setShowHistory} />}
     </>
   );
