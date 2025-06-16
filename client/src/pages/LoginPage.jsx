@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Eye, EyeOff, LogIn } from "lucide-react";
-import Logo from "@/assets/logo/logo.png";
+import { Eye, EyeOff, LogIn } from "lucide-react"; 
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
