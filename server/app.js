@@ -36,6 +36,9 @@ const allowedOrigins = [
   "http://localhost:5175"
 ];
 
+console.log("Allowed Origins:", allowedOrigins);
+
+
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, curl, Postman)
