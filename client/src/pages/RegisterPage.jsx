@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import Logo from "@/assets/logo/logo.png";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
