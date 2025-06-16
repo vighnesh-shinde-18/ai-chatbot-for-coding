@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
+
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
