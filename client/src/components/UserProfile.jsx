@@ -22,10 +22,14 @@ const UserProfile = () => {
         console.error("Failed to fetch user profile:", error);
       }
     };
-
-    fetchUserProfile();
+ 
+      const timer = setTimeout(fetchUserProfile, 500);
+  return () => clearTimeout(timer);
   }, []);
 
+ 
+
+  
   return (
     <div className="flex items-center bg-white text-violet-700  space-x-4 p-2 border rounded-md border-gray-800">
       <Avatar>
