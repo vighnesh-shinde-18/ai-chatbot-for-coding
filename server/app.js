@@ -29,12 +29,7 @@ app.use("/api", limiter);
 
 
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL, // Optional: From .env
-  "http://localhost:5173",  // Vite default
-  "http://localhost:5174",  // Your current dev port
-  "http://localhost:5175"
-];
+const allowedOrigins = process.env.FRONTEND_URL;
 
 console.log("Allowed Origins:", allowedOrigins);
 
@@ -43,7 +38,7 @@ app.use(cors({
   origin: function (origin, callback) {
     console.log("🔍 Incoming origin:", origin);
     if (!origin) return callback(null, true); // Allow tools like Postman
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins == origin) {
       console.log("✅ CORS allowed for:", origin);
       return callback(null, true);
     } else {
