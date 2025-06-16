@@ -19,19 +19,16 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col sm:flex-row min-h-screen bg-white text-primary">
-      {/* Sidebar */}
       <Sidebar
         onHistoryClick={() => setHistoryOpen(true)}
         selectedFeature=""
       />
-
-      {/* Main Dashboard Content */}
       <main className="flex-1 flex justify-center items-center p-6 bg-white">
         <div className="text-center max-w-2xl space-y-4">
           <div className="flex justify-center items-center gap-2 text-indigo-600 animate-pulse">
             <Sparkles className="w-6 h-6" />
             <h1 className="text-3xl sm:text-5xl font-bold">
-              Welcome to DSA Buddy
+              Welcome to CodeCrackr
             </h1>
           </div>
           <p className="text-muted-foreground text-base sm:text-lg">

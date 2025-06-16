@@ -57,6 +57,7 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
       });
       if (response.ok) {
         toast.success("Logged out successfully");
+        localStorage.removeItem("isLoggedIn");
         navigate("/login");
       } else {
         toast.error("Logout failed");
@@ -89,9 +90,9 @@ const Sidebar = ({ setSelectedFeature, selectedFeature }) => {
           ${isSidebarOpen ? "w-64" : "w-0 overflow-hidden"} md:static md:w-64`}
       >
         <Card className="h-full flex flex-col justify-between bg-violet-700 text-white shadow-lg">
-          {/* Logo Section */}
+  
           <div className="px-6 py-6 border-b border-violet-600">
-            <h1 className="text-2xl font-extrabold tracking-tight">DSA Buddy</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight">CodeCrackr</h1>
             <p className="text-sm text-violet-200">Your AI DSA Assistant</p>
           </div>
 

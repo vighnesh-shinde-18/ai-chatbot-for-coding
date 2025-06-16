@@ -33,6 +33,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL, // Optional: From .env
   "http://localhost:5173",  // Vite default
   "http://localhost:5174",  // Your current dev port
+  "http://localhost:5175"
 ];
 
 app.use(cors({

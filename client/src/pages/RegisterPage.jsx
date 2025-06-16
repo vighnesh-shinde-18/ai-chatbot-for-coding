@@ -50,7 +50,10 @@ const RegisterPage = () => {
     <section className="min-h-screen flex items-center justify-center px-4 py-10 bg-background">
       <Card className="w-full max-w-md rounded-3xl border-none shadow-2xl">
         <CardHeader className="flex flex-col items-center space-y-4">
-          <img src={Logo} alt="Logo" className="w-28 h-28 object-contain" />
+            <h1 className="text-5xl font-black tracking-wide text-primary drop-shadow-md leading-tight text-center">
+    Code<span className="text-blue-600">Crackr</span>
+  </h1>
+
           <CardTitle className="text-2xl font-bold text-primary text-center">
             Create your account
           </CardTitle>
