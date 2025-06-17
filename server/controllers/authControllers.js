@@ -10,31 +10,35 @@ const generateToken = (user) => {
 exports.registerUser = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    
-    
+
     if (!username || !email || !password) {
-  
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-    
+
     const existingUser = await User.findOne({ email });
 
-    
     if (existingUser) {
-      
       return res.status(409).json({ success: false, message: 'User already exists.' });
     }
-    
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword
     });
-    
-    
+
+    // Generate token and set cookie
+    const token = generateToken(newUser);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -44,12 +48,12 @@ exports.registerUser = async (req, res, next) => {
         email: newUser.email
       }
     });
-    
-    
+
   } catch (error) {
     next(error);
   }
 };
+
 
 exports.loginUser = async (req, res, next) => {
   try {
@@ -60,7 +64,6 @@ exports.loginUser = async (req, res, next) => {
     }
 
     const user = await User.findOne({ email }).select('+password');
-
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'Invalid credentials.' });
@@ -81,11 +84,10 @@ exports.loginUser = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-
     res.status(200).json({ 
       success: true,
       message: 'Logged in successfully',
-      data: { token } 
+      data: { token }
     });
 
   } catch (error) {
@@ -93,11 +95,13 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
+
+
 exports.logoutUser = (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'None',
   });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };
