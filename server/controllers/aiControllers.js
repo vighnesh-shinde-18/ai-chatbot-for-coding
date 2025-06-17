@@ -63,7 +63,7 @@ if (aiRawText) {
       featureType,
       userInput,
       aiOutput,
-
+title:aiOutput.title
     });
     await newInteraction.save();
 
